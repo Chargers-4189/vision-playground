@@ -45,7 +45,9 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     vision.periodic();
     // Comment to disable vision adjustment to Robot Post \/
-    m_drive.updateVison(vision.getEstimatedRobotPose().toPose2d(), Timer.getFPGATimestamp());
+    if (vision.estimateAvailable) {
+      m_drive.updateVison(vision.getEstimatedRobotPose(), Timer.getFPGATimestamp());
+    }
     m_drive.periodic();
     vision.updateRobotPosition(m_drive.getPose());
   }
