@@ -15,9 +15,13 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 public class Robot extends TimedRobot {
+
   private final XboxController m_controller = new XboxController(0);
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0
@@ -34,22 +38,35 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_trajectory =
-        TrajectoryGenerator.generateTrajectory(
-            new Pose2d(2, 2, new Rotation2d()),
-            List.of(),
-            new Pose2d(6, 4, new Rotation2d()),
-            new TrajectoryConfig(2, 2));
+      TrajectoryGenerator.generateTrajectory(
+        new Pose2d(2, 2, new Rotation2d()),
+        List.of(),
+        new Pose2d(6, 4, new Rotation2d()),
+        new TrajectoryConfig(2, 2)
+      );
   }
 
   @Override
   public void robotPeriodic() {
     vision.periodic();
-    // Comment to disable vision adjustment to Robot Post \/
-    if (vision.estimateAvailable) {
-      m_drive.updateVison(vision.getEstimatedRobotPose(), Timer.getFPGATimestamp());
+    Pose2d estimatedPose = vision.getEstimatedRobotPosition();
+    if (estimatedPose != null) {
+      //m_drive.updateVison(estimatedPose, Timer.getFPGATimestamp());
+      try (
+        BufferedWriter writer = new BufferedWriter(
+          new FileWriter("robot.logs", true)
+        )
+      ) {
+        writer.write(
+          estimatedPose.getX() + ""
+        );
+        writer.newLine();
+      } catch (IOException e) {
+        System.err.println(e);
+      }
     }
     m_drive.periodic();
-    vision.updateRobotPosition(m_drive.getPose());
+    vision.updateSimRobotPosition(m_drive.getPose());
   }
 
   @Override
@@ -63,20 +80,23 @@ public class Robot extends TimedRobot {
     double elapsed = m_timer.get();
     Trajectory.State reference = m_trajectory.sample(elapsed);
     ChassisSpeeds speeds = m_ramsete.calculate(m_drive.getPose(), reference);
-    m_drive.drive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
+    //m_drive.drive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
   }
 
   @Override
   public void teleopPeriodic() {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    double xSpeed = -m_speedLimiter.calculate(m_controller.getLeftY()) * Drivetrain.kMaxSpeed;
+    double xSpeed =
+      -m_speedLimiter.calculate(m_controller.getLeftY()) * Drivetrain.kMaxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    double rot = -m_rotLimiter.calculate(m_controller.getRightX()) * Drivetrain.kMaxAngularSpeed;
+    double rot =
+      -m_rotLimiter.calculate(m_controller.getRightX()) *
+      Drivetrain.kMaxAngularSpeed;
     m_drive.drive(xSpeed, rot);
   }
 
