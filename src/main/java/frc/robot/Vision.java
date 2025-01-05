@@ -27,7 +27,8 @@ public class Vision extends SubsystemBase {
   public Vision() {
     try {
       AprilTagFieldLayout tagLayout = AprilTagFieldLayout.loadFromResource(
-        AprilTagFields.k2024Crescendo.m_resourceFile
+        AprilTagFields.k2025Reefscape.m_resourceFile
+        AprilTagFieldLayout.loadField("");
       );
       visionSimField.addAprilTags(tagLayout);
     } catch (Exception e) {

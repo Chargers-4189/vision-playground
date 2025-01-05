@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
     vision.periodic();
     Pose2d estimatedPose = vision.getEstimatedRobotPosition();
     if (estimatedPose != null) {
-      //m_drive.updateVison(estimatedPose, Timer.getFPGATimestamp());
+      m_drive.updateVison(estimatedPose, Timer.getFPGATimestamp());
       try (
         BufferedWriter writer = new BufferedWriter(
           new FileWriter("robot.logs", true)
@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
     double elapsed = m_timer.get();
     Trajectory.State reference = m_trajectory.sample(elapsed);
     ChassisSpeeds speeds = m_ramsete.calculate(m_drive.getPose(), reference);
-    //m_drive.drive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
+    m_drive.drive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
   }
 
   @Override
