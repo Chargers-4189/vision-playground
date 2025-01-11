@@ -26,7 +26,7 @@ public class AprilTagCamera {
     try {
       tagLayout =
         AprilTagFieldLayout.loadFromResource(
-          AprilTagFields.k2024Crescendo.m_resourceFile
+          AprilTagFields.k2025Reefscape.m_resourceFile
         );
     } catch (Exception e) {
       System.err.println(e);
