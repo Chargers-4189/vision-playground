@@ -5,12 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.photonvision.simulation.VisionSystemSim;
 
@@ -28,10 +28,11 @@ public class Vision extends SubsystemBase {
     try {
       AprilTagFieldLayout tagLayout = AprilTagFieldLayout.loadFromResource(
         AprilTagFields.k2025Reefscape.m_resourceFile
-        AprilTagFieldLayout.loadField("");
+        // Filesystem.getDeployDirectory() + "\\2025-reefscape.json"
       );
       visionSimField.addAprilTags(tagLayout);
     } catch (Exception e) {
+      System.err.println("Unable to load April Tag Field Layout.");
       System.out.println(e.getMessage());
     }
 
