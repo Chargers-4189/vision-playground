@@ -26,7 +26,7 @@ public class AprilTagCamera {
     try {
       tagLayout =
         AprilTagFieldLayout.loadFromResource(
-          AprilTagFields.k2024Crescendo.m_resourceFile
+          AprilTagFields.k2025Reefscape.m_resourceFile
         );
     } catch (Exception e) {
       System.err.println(e);
@@ -64,7 +64,7 @@ public class AprilTagCamera {
     if (!results.isEmpty()) {
       var result = results.get(results.size() - 1);
       result.targets.removeIf(tag -> {
-        double maxDistance = 6.0;
+        double maxDistance = 4.0;
         Transform3d transform = tag.getBestCameraToTarget();
         return (
           transform.getX() > maxDistance || transform.getY() > maxDistance

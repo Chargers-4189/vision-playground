@@ -28,11 +28,11 @@ public class Vision extends SubsystemBase {
     try {
       AprilTagFieldLayout tagLayout = AprilTagFieldLayout.loadFromResource(
         AprilTagFields.k2025Reefscape.m_resourceFile
-        // Filesystem.getDeployDirectory() + "\\2025-reefscape.json"
+        //Filesystem.getDeployDirectory() + "\\2025-reefscape.json"
       );
       visionSimField.addAprilTags(tagLayout);
     } catch (Exception e) {
-      System.err.println("Unable to load April Tag Field Layout.");
+      System.out.println("Could not load field.");
       System.out.println(e.getMessage());
     }
 
